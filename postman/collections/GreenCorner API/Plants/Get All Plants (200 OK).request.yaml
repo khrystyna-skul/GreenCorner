@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/plants?page=1&limit=12"
+method: GET
+queryParams:
+  page: "1"
+  limit: "12"
+order: 1000
