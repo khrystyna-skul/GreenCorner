@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{base_url}}/api/nurseries/1/"
+method: DELETE
+order: 2000

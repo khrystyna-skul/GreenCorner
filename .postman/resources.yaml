@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: 4e2e3658-9318-4b75-8921-31c66e0149ec
+
+cloudResources:
+  collections:
+    ../postman/collections/GreenCorner API: ccf541ed-c50c-4e49-9bd8-09f2ea41de15
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/
