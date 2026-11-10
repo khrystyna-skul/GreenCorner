@@ -1,0 +1,35 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/plants/11/
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Фікус Еластика\",\r
+
+    \    \"latinName\": \"Ficus elastica\",\r
+
+    \    \"price\": 450,\r
+
+    \    \"stock\": 15,\r
+
+    \    \"lightLevel\": \"Яскраве розсіяне світло\",\r
+
+    \    \"difficulty\": \"easy\",\r
+
+    \    \"petSafe\": false,\r
+
+    \    \"imageUrl\": \"https://example.com/ficus.jpg\",\r
+
+    \    \"typeId\": 1,\r
+
+    \    \"familyId\": 1,\r
+
+    \    \"nurseryId\": 1\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_1b7h}}"
+order: 7000
