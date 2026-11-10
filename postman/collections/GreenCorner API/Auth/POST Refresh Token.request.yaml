@@ -1,0 +1,7 @@
+$kind: http-request
+url: http://127.0.0.1:8000/api/auth/refresh/
+method: POST
+body:
+  type: json
+  content: '{"refresh": "<your_refresh_token_here>"}'
+order: 4000

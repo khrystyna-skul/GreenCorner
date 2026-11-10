@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "GreenCorner API",
+		"description": "Повна колекція запитів для API магазину кімнатних рослин GreenCorner.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Plants",
+			"item": [
+				{
+					"name": "Get All Plants (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/plants?page=1&limit=12",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "12" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Plant Detail (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/plants/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Plant Detail (404 Not Found)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/plants/999",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants", "999"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Plant (201 Created)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Монстера\",\n  \"latinName\": \"Monstera deliciosa\",\n  \"description\": \"Декоративна ліана...\",\n  \"price\": 450,\n  \"stock\": 12,\n  \"imageUrl\": \"https://example.com/monstera.jpg\",\n  \"lightLevel\": \"medium\",\n  \"watering\": \"Раз на 7-10 днів\",\n  \"difficulty\": \"easy\",\n  \"petSafe\": false,\n  \"heightCm\": 60,\n  \"potDiameterCm\": 17,\n  \"typeId\": 1,\n  \"familyId\": 1,\n  \"nurseryId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/plants",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Plant (400 Bad Request - Invalid Data)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"price\": \"invalid_price\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/plants",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Plant (204 No Content)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/plants/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "plants", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Families",
+			"item": [
+				{
+					"name": "Get All Families (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/families",
+							"host": ["{{base_url}}"],
+							"path": ["api", "families"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Family with Plants (409 Conflict)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/families/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "families", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Nurseries",
+			"item": [
+				{
+					"name": "Get All Nurseries (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/nurseries",
+							"host": ["{{base_url}}"],
+							"path": ["api", "nurseries"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Nursery with Plants (409 Conflict)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/nurseries/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "nurseries", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}

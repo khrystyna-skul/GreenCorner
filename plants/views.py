@@ -3,9 +3,10 @@ from django.core.paginator import Paginator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import Plant, Family, Nursery, PlantType
-from .serializers import (
+from plants.models import Plant, Family, Nursery, PlantType
+from plants.serializers import (
     PlantListSerializer, PlantDetailSerializer, PlantCreateUpdateSerializer,
     FamilyListSerializer, FamilyDetailSerializer,
     NurseryListSerializer, NurseryDetailSerializer,
@@ -31,6 +32,8 @@ def paginate_queryset(queryset, request, serializer_class):
 
 
 class PlantListCreateView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly] 
+
     def get(self, request):
         qs = Plant.objects.all().select_related('type', 'family', 'nursery')
 
@@ -64,6 +67,8 @@ class PlantListCreateView(APIView):
 
 
 class PlantDetailView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly] 
+    
     def get_object(self, pk):
         try:
             return Plant.objects.select_related('type', 'family', 'nursery').get(pk=pk)

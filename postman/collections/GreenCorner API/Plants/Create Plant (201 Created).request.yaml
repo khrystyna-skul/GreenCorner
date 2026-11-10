@@ -5,5 +5,18 @@ headers:
   Content-Type: application/json
 body:
   type: text
-  content: ""
+  content: |-
+    {
+        "name": "Монстера",
+        "latinName": "Monstera deliciosa",
+        "price": "450.00",
+        "stock": 12,
+        "imageUrl": "https://example.com/monstera.jpg",
+        "lightLevel": "medium",
+        "difficulty": "easy",
+        "petSafe": false,
+        "typeId": 1,
+        "familyId": 1,
+        "nurseryId": 1
+    }
 order: 4000

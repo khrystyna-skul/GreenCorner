@@ -2,6 +2,8 @@
 workspace:
   id: 4e2e3658-9318-4b75-8921-31c66e0149ec
 
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
 cloudResources:
   collections:
     ../postman/collections/GreenCorner API: ccf541ed-c50c-4e49-9bd8-09f2ea41de15
