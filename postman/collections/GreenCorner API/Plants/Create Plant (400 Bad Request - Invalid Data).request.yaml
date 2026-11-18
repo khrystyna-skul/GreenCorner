@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{base_url}}/api/plants/"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "",
+      "price": "invalid_price"
+    }
+order: 5000

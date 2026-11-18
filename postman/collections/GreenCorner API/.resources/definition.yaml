@@ -1,0 +1,9 @@
+$kind: collection
+description: Повна колекція запитів для API магазину кімнатних рослин GreenCorner.
+variables:
+  - key: base_url
+    value: http://127.0.0.1:8000
+    disabled: false
+  - key: json_web_token_1b7h
+    secret: true
+    disabled: false
