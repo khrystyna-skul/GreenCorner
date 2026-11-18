@@ -18,24 +18,141 @@
 - **Кошик і замовлення.** Авторизований користувач додає рослини в кошик, а після натискання «Купити» створюється замовлення (без оплати та введення додаткових даних).
 - **Сторінка «Про нас».** Контакти, умови доставки та повернення.
 
+---
+
+## Локальне розгортання та встановлення залежностей
+
+### 1. Клонування репозиторію та створення віртуального середовища
+
+```bash
+git clone https://github.com/khrystyna-skul/GreenCorner.git
+cd GreenCorner
+python -m venv venv
+```
+
+Активація віртуального середовища:
+
+**Windows (PowerShell):**
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+**Linux / macOS:**
+
+```bash
+source venv/bin/activate
+```
+
+### 2. Встановлення залежностей
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 3. Налаштування змінних середовища (.env)
+
+Конфіденційні дані та параметри середовища зберігаються у файлі `.env` (виключено з Git).
+
+Створіть файл `.env` у кореневій директорії проєкту на основі шаблону `.env.example`:
+
+**Windows (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**Linux / macOS:**
+
+```bash
+cp .env.example .env
+```
+
+Заповніть змінні у файлі `.env`:
+
+- `SECRET_KEY` — секретний ключ Django для криптографічного підпису сесій та токенів.
+- `DEBUG` — режим налагодження (`True` для локальної розробки, `False` для продакшену).
+- `ALLOWED_HOSTS` — список дозволених хостів/доменів через кому (для локальної розробки можна залишити порожнім).
+- `CORS_ALLOWED_ORIGINS` — перелік URL-адрес фронтенду через кому, яким дозволено надсилати запити до API (наприклад, `http://localhost:5500,http://127.0.0.1:5500`).
+
+### 4. Застосування міграцій та запуск сервера
+
+```bash
+python manage.py migrate
+python manage.py runserver
+```
+
+Після запуску сервер буде доступний за адресою: <http://127.0.0.1:8000/>
+
+---
+
+## Документація API (OpenAPI / Swagger)
+
+Для автоматичної генерації документації API використовується бібліотека `drf-spectacular` (стандарт OpenAPI 3.0).
+
+Після запуску локального сервера доступні:
+
+- **Swagger UI** (інтерактивна документація з можливістю тестування запитів): <http://127.0.0.1:8000/api/docs/>
+- **ReDoc** (структурована довідкова документація): <http://127.0.0.1:8000/api/redoc/>
+- **Отримання OpenAPI-схеми** (у форматі YAML/JSON): <http://127.0.0.1:8000/api/schema/>
+
+Також схему OpenAPI можна згенерувати у файл локально через CLI-команду:
+
+```bash
+python manage.py spectacular --color --file schema.yml
+```
+
+---
+
+## Запуск автоматизованих тестів та перевірка покриття
+
+Для тестування API використовується фреймворк `pytest` разом із `pytest-django` та інструментом вимірювання покриття `coverage.py`.
+
+Запустити всі автоматизовані тести:
+
+```bash
+python -m pytest
+```
+
+Запустити тести із вимірюванням покриття коду (`coverage.py`):
+
+```bash
+python -m coverage run -m pytest
+python -m coverage report -m
+```
+
+(Опціонально) Згенерувати детальний HTML-звіт про покриття у папку `htmlcov/`:
+
+```bash
+python -m coverage html
+```
+
+---
+
+## Логування
+
+У проєкті налаштовано логування на базі стандартного модуля Python `logging` (рівні DEBUG, INFO, WARNING, ERROR). Логи виводяться у консоль та записуються у файл `logs/greencorner.log` без збереження паролів, JWT-токенів чи інших конфіденційних даних.
+
+---
+
 ## Загальні домовленості API
 
-- Базовий URL: `/api`
-- Формат обміну даними: JSON (`Content-Type: application/json`)
-- Авторизація: заголовок `Authorization: Bearer <token>`. Токен повертається при логіні.
-- Позначки доступу: 🌐 публічний, 🔒 лише для авторизованих, 🛡️ лише для адміністратора.
-- Пагінація списків: `?page=1&limit=12`. Відповідь має вигляд `{ "items": [...], "page": 1, "limit": 12, "total": 87 }`.
-- Помилки повертаються у форматі `{ "error": "Опис помилки" }`.
+- **Базовий URL:** `/api`
+- **Формат обміну даними:** JSON (`Content-Type: application/json`)
+- **Авторизація:** заголовок `Authorization: Bearer <token>`. Токен повертається при логіні.
+- **Позначки доступу:** 🌐 публічний, 🔒 лише для авторизованих, 🛡️ лише для адміністратора.
+- **Пагінація списків:** `?page=1&limit=12`. Відповідь має вигляд `{ "items": [...], "page": 1, "limit": 12, "total": 87 }`.
+- **Помилки** повертаються у форматі `{ "error": "Опис помилки" }`.
 
 Типові статуси помилок (не повторюються в кожному ендпоінті):
 
 | Статус | Коли |
 |---|---|
-| 400 Bad Request | Некоректні дані в тілі чи параметрах запиту |
-| 401 Unauthorized | Немає токена або він недійсний |
-| 403 Forbidden | Недостатньо прав (потрібен адмін) |
-| 404 Not Found | Ресурс не знайдено |
-| 409 Conflict | Конфлікт (наприклад, email уже зайнятий) |
+| `400 Bad Request` | Некоректні дані в тілі чи параметрах запиту |
+| `401 Unauthorized` | Немає токена або він недійсний |
+| `403 Forbidden` | Недостатньо прав (потрібен адмін) |
+| `404 Not Found` | Ресурс не знайдено |
+| `409 Conflict` | Конфлікт (наприклад, email уже зайнятий) |
 
 ---
 
@@ -44,60 +161,76 @@
 ### Автентифікація
 
 #### `POST /api/auth/register` 🌐
+
 Реєстрація нового користувача.
 
-Request body:
+**Request body:**
+
 ```json
 { "name": "Олена", "email": "olena@example.com", "password": "secret123", "phone": "+380501234567" }
 ```
-Response: `201 Created`
+
+**Response:** `201 Created`
+
 ```json
 { "id": 1, "name": "Олена", "email": "olena@example.com", "phone": "+380501234567", "role": "user" }
 ```
-Помилки: `400` (невалідні дані), `409` (email вже зареєстрований).
+
+**Помилки:** `400` (невалідні дані), `409` (email вже зареєстний).
 
 #### `POST /api/auth/login` 🌐
+
 Вхід користувача.
 
-Request body:
+**Request body:**
+
 ```json
 { "email": "olena@example.com", "password": "secret123" }
 ```
-Response: `200 OK`
+
+**Response:** `200 OK`
+
 ```json
 { "token": "eyJhbGciOi...", "user": { "id": 1, "name": "Олена", "email": "olena@example.com", "role": "user" } }
 ```
-Помилки: `401` (невірний email чи пароль).
+
+**Помилки:** `401` (невірний email чи пароль).
 
 ---
 
 ### Профіль
 
 #### `GET /api/users/me` 🔒
+
 Отримати дані поточного користувача.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 { "id": 1, "name": "Олена", "email": "olena@example.com", "phone": "+380501234567", "role": "user" }
 ```
 
 #### `PUT /api/users/me` 🔒
+
 Редагувати свої дані.
 
-Request body:
+**Request body:**
+
 ```json
 { "name": "Олена Коваль", "phone": "+380509999999" }
 ```
-Response: `200 OK` — оновлений об'єкт користувача (як у `GET /api/users/me`).
+
+**Response:** `200 OK` — оновлений об'єкт користувача (як у `GET /api/users/me`).
 
 ---
 
 ### Рослини
 
 #### `GET /api/plants` 🌐
+
 Каталог рослин з пошуком, фільтрами, сортуванням і пагінацією.
 
-Query-параметри (усі необов'язкові):
+**Query-параметри** (усі необов'язкові):
 
 | Параметр | Опис |
 |---|---|
@@ -111,9 +244,10 @@ Query-параметри (усі необов'язкові):
 | `sort` | `price_asc`, `price_desc`, `popularity`, `type` |
 | `page`, `limit` | Пагінація |
 
-Приклад: `GET /api/plants?search=монстера&light=medium&petSafe=true&sort=price_asc&page=1&limit=12`
+**Приклад:** `GET /api/plants?search=монстера&light=medium&petSafe=true&sort=price_asc&page=1&limit=12`
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 {
   "items": [
@@ -130,9 +264,11 @@ Response: `200 OK`
 ```
 
 #### `GET /api/plants/{id}` 🌐
+
 Детальна інформація про рослину.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 {
   "id": 5, "name": "Монстера", "latinName": "Monstera deliciosa",
@@ -145,12 +281,15 @@ Response: `200 OK`
   "nursery": { "id": 3, "name": "Зелений дім" }
 }
 ```
-Помилки: `404`.
+
+**Помилки:** `404`.
 
 #### `POST /api/plants` 🛡️
+
 Додати рослину.
 
-Request body:
+**Request body:**
+
 ```json
 {
   "name": "Монстера", "latinName": "Monstera deliciosa", "description": "...",
@@ -160,129 +299,157 @@ Request body:
   "typeId": 2, "familyId": 1, "nurseryId": 3
 }
 ```
-Response: `201 Created` — створена рослина (як у `GET /api/plants/{id}`).
+
+**Response:** `201 Created` — створена рослина (як у `GET /api/plants/{id}`).
 
 #### `PUT /api/plants/{id}` 🛡️
+
 Редагувати рослину. Request body такий самий, як у `POST /api/plants`.
 
-Response: `200 OK` — оновлена рослина. Помилки: `404`.
+**Response:** `200 OK` — оновлена рослина. **Помилки:** `404`.
 
 #### `DELETE /api/plants/{id}` 🛡️
+
 Видалити рослину.
 
-Response: `204 No Content`. Помилки: `404`.
+**Response:** `204 No Content`. **Помилки:** `404`.
 
 ---
 
 ### Родини
 
 #### `GET /api/families` 🌐
+
 Список усіх родин.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 [ { "id": 1, "name": "Ароїдні", "description": "Родина тропічних рослин...", "plantsCount": 8 } ]
 ```
 
 #### `GET /api/families/{id}` 🌐
+
 Інформація про родину.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 { "id": 1, "name": "Ароїдні", "description": "Родина тропічних рослин..." }
 ```
-Помилки: `404`.
+
+**Помилки:** `404`.
 
 #### `GET /api/families/{id}/plants` 🌐
+
 Усі рослини родини (підтримує `page`, `limit`, `sort`).
 
-Response: `200 OK` — список рослин у форматі `GET /api/plants`. Помилки: `404`.
+**Response:** `200 OK` — список рослин у форматі `GET /api/plants`. **Помилки:** `404`.
 
 #### `POST /api/families` 🛡️
-Request body: `{ "name": "Ароїдні", "description": "..." }`
 
-Response: `201 Created` — створена родина.
+**Request body:** `{ "name": "Ароїдні", "description": "..." }`
+
+**Response:** `201 Created` — створена родина.
 
 #### `PUT /api/families/{id}` 🛡️
-Request body: `{ "name": "Ароїдні", "description": "..." }`
 
-Response: `200 OK` — оновлена родина. Помилки: `404`.
+**Request body:** `{ "name": "Ароїдні", "description": "..." }`
+
+**Response:** `200 OK` — оновлена родина. **Помилки:** `404`.
 
 #### `DELETE /api/families/{id}` 🛡️
-Response: `204 No Content`. Помилки: `404`, `409` (у родини є рослини).
+
+**Response:** `204 No Content`. **Помилки:** `404`, `409` (у родини є рослини).
 
 ---
 
 ### Розсадники
 
 #### `GET /api/nurseries` 🌐
+
 Список усіх розсадників.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 [ { "id": 3, "name": "Зелений дім", "description": "Сімейний розсадник...", "region": "Київська область", "plantsCount": 24 } ]
 ```
 
 #### `GET /api/nurseries/{id}` 🌐
+
 Інформація про розсадник.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 { "id": 3, "name": "Зелений дім", "description": "Сімейний розсадник...", "region": "Київська область" }
 ```
-Помилки: `404`.
+
+**Помилки:** `404`.
 
 #### `GET /api/nurseries/{id}/plants` 🌐
+
 Усі рослини розсадника (підтримує `page`, `limit`, `sort`).
 
-Response: `200 OK` — список рослин у форматі `GET /api/plants`. Помилки: `404`.
+**Response:** `200 OK` — список рослин у форматі `GET /api/plants`. **Помилки:** `404`.
 
 #### `POST /api/nurseries` 🛡️
-Request body: `{ "name": "Зелений дім", "description": "...", "region": "Київська область" }`
 
-Response: `201 Created` — створений розсадник.
+**Request body:** `{ "name": "Зелений дім", "description": "...", "region": "Київська область" }`
+
+**Response:** `201 Created` — створений розсадник.
 
 #### `PUT /api/nurseries/{id}` 🛡️
+
 Request body такий самий, як у `POST /api/nurseries`.
 
-Response: `200 OK` — оновлений розсадник. Помилки: `404`.
+**Response:** `200 OK` — оновлений розсадник. **Помилки:** `404`.
 
 #### `DELETE /api/nurseries/{id}` 🛡️
-Response: `204 No Content`. Помилки: `404`, `409` (у розсадника є рослини).
+
+**Response:** `204 No Content`. **Помилки:** `404`, `409` (у розсадника є рослини).
 
 ---
 
 ### Типи рослин
 
 #### `GET /api/plant-types` 🌐
+
 Список типів (для фільтра).
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 [ { "id": 2, "name": "Тропічні" }, { "id": 3, "name": "Суккуленти" } ]
 ```
 
 #### `POST /api/plant-types` 🛡️
-Request body: `{ "name": "Суккуленти" }`
 
-Response: `201 Created` — створений тип.
+**Request body:** `{ "name": "Суккуленти" }`
+
+**Response:** `201 Created` — створений тип.
 
 #### `PUT /api/plant-types/{id}` 🛡️
-Request body: `{ "name": "Суккуленти" }`
 
-Response: `200 OK` — оновлений тип. Помилки: `404`.
+**Request body:** `{ "name": "Суккуленти" }`
+
+**Response:** `200 OK` — оновлений тип. **Помилки:** `404`.
 
 #### `DELETE /api/plant-types/{id}` 🛡️
-Response: `204 No Content`. Помилки: `404`, `409` (є рослини цього типу).
+
+**Response:** `204 No Content`. **Помилки:** `404`, `409` (є рослини цього типу).
 
 ---
 
 ### Кошик
 
 #### `GET /api/cart` 🔒
+
 Вміст кошика поточного користувача.
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 {
   "items": [
@@ -293,54 +460,67 @@ Response: `200 OK`
 ```
 
 #### `POST /api/cart/items` 🔒
+
 Додати рослину в кошик (якщо вже є, кількість збільшується).
 
-Request body:
+**Request body:**
+
 ```json
 { "plantId": 5, "quantity": 1 }
 ```
-Response: `201 Created` — оновлений кошик (як у `GET /api/cart`).
-Помилки: `400` (кількість більша, ніж є на складі), `404` (рослини немає).
+
+**Response:** `201 Created` — оновлений кошик (як у `GET /api/cart`).
+**Помилки:** `400` (кількість більша, ніж є на складі), `404` (рослини немає).
 
 #### `PATCH /api/cart/items/{plantId}` 🔒
+
 Змінити кількість рослини в кошику.
 
-Request body:
+**Request body:**
+
 ```json
 { "quantity": 3 }
 ```
-Response: `200 OK` — оновлений кошик. Помилки: `400`, `404`.
+
+**Response:** `200 OK` — оновлений кошик. **Помилки:** `400`, `404`.
 
 #### `DELETE /api/cart/items/{plantId}` 🔒
+
 Прибрати рослину з кошика.
 
-Response: `204 No Content`. Помилки: `404`.
+**Response:** `204 No Content`. **Помилки:** `404`.
 
 #### `DELETE /api/cart` 🔒
+
 Очистити кошик.
 
-Response: `204 No Content`.
+**Response:** `204 No Content`.
 
 ---
 
 ### Замовлення
 
 #### `POST /api/orders` 🔒
+
 Створити замовлення з поточного вмісту кошика (кнопка «Купити»). Тіло запиту не потрібне. Після створення кошик очищується, а залишок на складі зменшується.
 
-Response: `201 Created`
+**Response:** `201 Created`
+
 ```json
 {
   "id": 17, "status": "created", "totalPrice": 900, "createdAt": "2026-10-13T10:15:00Z",
   "items": [ { "plantId": 5, "name": "Монстера", "quantity": 2, "unitPrice": 450 } ]
 }
 ```
-Помилки: `400` (кошик порожній або рослини немає в потрібній кількості).
+
+**Помилки:** `400` (кошик порожній або рослини немає в потрібній кількості).
 
 #### `GET /api/orders` 🔒
+
 Історія замовлень поточного користувача (від новіших до старіших, підтримує `page`, `limit`).
 
-Response: `200 OK`
+**Response:** `200 OK`
+
 ```json
 {
   "items": [
@@ -351,15 +531,14 @@ Response: `200 OK`
 ```
 
 #### `GET /api/orders/{id}` 🔒
+
 Деталі замовлення зі складом. Користувач бачить лише свої замовлення.
 
-Response: `200 OK` — об'єкт замовлення (як у відповіді `POST /api/orders`). Помилки: `404`.
+**Response:** `200 OK` — об'єкт замовлення (як у відповіді `POST /api/orders`). **Помилки:** `404`.
 
 ---
 
 ## Схема бази даних
-
-![Схема бази даних](docs/db-schema.png)
 
 Короткий опис зв'язків:
 

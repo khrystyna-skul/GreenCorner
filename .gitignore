@@ -40,3 +40,9 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+logs/
+
+.pytest_cache/
+.coverage
+htmlcov/

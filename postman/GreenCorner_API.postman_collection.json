@@ -2,10 +2,72 @@
 	"info": {
 		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 		"name": "GreenCorner API",
-		"description": "Повна колекція запитів для API магазину кімнатних рослин GreenCorner.",
+		"description": "Повна колекція запитів для API магазину кімнатних рослин GreenCorner з JWT-авторизацією.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User (201 Created)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\",\n  \"password_confirm\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User (200 OK)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login", ""]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token (200 OK)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"YOUR_REFRESH_TOKEN_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/refresh/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "refresh", ""]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Plants",
 			"item": [
@@ -15,13 +77,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/plants?page=1&limit=12",
+							"raw": "{{base_url}}/api/plants/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants"],
-							"query": [
-								{ "key": "page", "value": "1" },
-								{ "key": "limit", "value": "12" }
-							]
+							"path": ["api", "plants", ""]
 						}
 					},
 					"response": []
@@ -32,9 +90,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/plants/1",
+							"raw": "{{base_url}}/api/plants/1/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants", "1"]
+							"path": ["api", "plants", "1", ""]
 						}
 					},
 					"response": []
@@ -45,9 +103,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/plants/999",
+							"raw": "{{base_url}}/api/plants/999/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants", "999"]
+							"path": ["api", "plants", "999", ""]
 						}
 					},
 					"response": []
@@ -57,16 +115,17 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{ "key": "Content-Type", "value": "application/json" }
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{access_token}}" }
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Монстера\",\n  \"latinName\": \"Monstera deliciosa\",\n  \"description\": \"Декоративна ліана...\",\n  \"price\": 450,\n  \"stock\": 12,\n  \"imageUrl\": \"https://example.com/monstera.jpg\",\n  \"lightLevel\": \"medium\",\n  \"watering\": \"Раз на 7-10 днів\",\n  \"difficulty\": \"easy\",\n  \"petSafe\": false,\n  \"heightCm\": 60,\n  \"potDiameterCm\": 17,\n  \"typeId\": 1,\n  \"familyId\": 1,\n  \"nurseryId\": 1\n}"
+							"raw": "{\n  \"name\": \"Монстера\",\n  \"latinName\": \"Monstera deliciosa\",\n  \"price\": 450,\n  \"stock\": 12,\n  \"imageUrl\": \"https://example.com/monstera.jpg\",\n  \"lightLevel\": \"medium\",\n  \"difficulty\": \"easy\",\n  \"petSafe\": false,\n  \"typeId\": 1,\n  \"familyId\": 1,\n  \"nurseryId\": 1\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/plants",
+							"raw": "{{base_url}}/api/plants/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants"]
+							"path": ["api", "plants", ""]
 						}
 					},
 					"response": []
@@ -76,16 +135,17 @@
 					"request": {
 						"method": "POST",
 						"header": [
-							{ "key": "Content-Type", "value": "application/json" }
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{access_token}}" }
 						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"name\": \"\",\n  \"price\": \"invalid_price\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/plants",
+							"raw": "{{base_url}}/api/plants/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants"]
+							"path": ["api", "plants", ""]
 						}
 					},
 					"response": []
@@ -94,11 +154,13 @@
 					"name": "Delete Plant (204 No Content)",
 					"request": {
 						"method": "DELETE",
-						"header": [],
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{access_token}}" }
+						],
 						"url": {
-							"raw": "{{base_url}}/api/plants/1",
+							"raw": "{{base_url}}/api/plants/1/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "plants", "1"]
+							"path": ["api", "plants", "1", ""]
 						}
 					},
 					"response": []
@@ -114,22 +176,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/families",
+							"raw": "{{base_url}}/api/families/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "families"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Family with Plants (409 Conflict)",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/families/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "families", "1"]
+							"path": ["api", "families", ""]
 						}
 					},
 					"response": []
@@ -145,22 +194,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/nurseries",
+							"raw": "{{base_url}}/api/nurseries/",
 							"host": ["{{base_url}}"],
-							"path": ["api", "nurseries"]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Nursery with Plants (409 Conflict)",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/nurseries/1",
-							"host": ["{{base_url}}"],
-							"path": ["api", "nurseries", "1"]
+							"path": ["api", "nurseries", ""]
 						}
 					},
 					"response": []
@@ -172,6 +208,11 @@
 		{
 			"key": "base_url",
 			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "YOUR_ACCESS_TOKEN_HERE",
 			"type": "string"
 		}
 	]
